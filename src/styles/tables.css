@@ -1,0 +1,113 @@
+/* Table Styles */
+}
+  }
+    display: none;
+  .table td.hide-mobile {
+  .table th.hide-mobile,
+  /* Hide less important columns on mobile */
+
+  }
+    font-size: 11px;
+  .table thead th {
+
+  }
+    padding: 12px 8px;
+  .table tbody td {
+  .table thead th,
+
+  }
+    font-size: 12px;
+  .table {
+@media (max-width: 768px) {
+/* Responsive Tables */
+
+}
+  text-align: center;
+  font-size: 14px;
+.table-empty-text {
+
+}
+  opacity: 0.5;
+  margin-bottom: 16px;
+  font-size: 48px;
+.table-empty-icon {
+
+}
+  color: var(--text-secondary);
+  padding: 40px;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  display: flex;
+.table-empty {
+/* Table Empty State */
+
+}
+  text-align: right;
+.table td.text-right {
+.table th.text-right,
+
+}
+  text-align: center;
+.table td.text-center {
+.table th.text-center,
+/* Table Cell Alignments */
+
+}
+  background: var(--bg-tertiary);
+.table-striped tbody tr:nth-child(odd):hover {
+
+}
+  background: var(--bg-secondary);
+.table-striped tbody tr:nth-child(odd) {
+/* Table Variants */
+
+}
+  color: var(--text-primary);
+  padding: 16px;
+.table tbody td {
+
+}
+  border-bottom: none;
+.table tbody tr:last-child {
+
+}
+  background: var(--bg-secondary);
+.table tbody tr:hover {
+
+}
+  transition: var(--transition);
+  border-bottom: 1px solid var(--border-color);
+.table tbody tr {
+
+}
+  letter-spacing: 0.5px;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  font-weight: 700;
+  text-align: left;
+  padding: 16px;
+.table thead th {
+
+}
+  z-index: 10;
+  top: 0;
+  position: sticky;
+  border-bottom: 2px solid var(--border-color);
+  background: var(--bg-secondary);
+.table thead {
+
+}
+  font-size: 14px;
+  border-collapse: collapse;
+  width: 100%;
+.table {
+
+}
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow-x: auto;
+.table-container {
+

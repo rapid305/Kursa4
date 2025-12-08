@@ -1,0 +1,193 @@
+/* Light Theme (Default) */
+:root[data-theme='light'],
+:root:not([data-theme]) {
+  --primary-color: #667eea;
+  --primary-dark: #5568d3;
+  --primary-light: #8b9ef7;
+  --secondary-color: #764ba2;
+  --secondary-light: #9870c1;
+  --success-color: #10b981;
+  --success-light: #6ee7b7;
+  --warning-color: #f59e0b;
+  --warning-light: #fcd34d;
+  --error-color: #ef4444;
+  --error-light: #fca5a5;
+  --danger-color: #dc2626;
+
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #f0f1f5;
+  --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --bg-gradient-alt: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --text-light: #ffffff;
+
+  --border-color: #e5e7eb;
+  --border-light: #f3f4f6;
+  --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --input-text: #1f2937;
+
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --card-hover-bg: #f9fafb;
+  --card-border: rgba(0, 0, 0, 0.08);
+
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Theme */
+:root[data-theme='dark'] {
+  --primary-color: #7aa2f7;
+  --primary-dark: #4c77cf;
+  --primary-light: #a8c5ff;
+  --secondary-color: #bb9af7;
+  --secondary-light: #d1b7ff;
+  --success-color: #10b981;
+  --success-light: #6ee7b7;
+  --warning-color: #f59e0b;
+  --warning-light: #fcd34d;
+  --error-color: #f38ba8;
+  --error-light: #fca5a5;
+  --danger-color: #e11d48;
+
+  /* Более глубокая тёмная палитра */
+  --bg-primary: #0b0f1a;         /* основной фон */
+  --bg-secondary: #111827;       /* карточки/панели */
+  --bg-tertiary: #0f172a;        /* элементы ввода */
+  --bg-gradient: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  --bg-gradient-alt: linear-gradient(135deg, #0b0f1a 0%, #111827 100%);
+
+  --text-primary: #e5e7eb;       /* основной текст */
+  --text-secondary: #cbd5e1;     /* вторичный текст */
+  --text-tertiary: #94a3b8;      /* подсказки */
+  --text-light: #ffffff;         /* на кнопках */
+
+  --border-color: #1f2937;       /* границы */
+  --border-light: #334155;       /* светлые границы */
+  --shadow: 0 5px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.3);
+
+  --input-bg: #0f172a;           /* фон инпутов */
+  --input-border: #334155;       /* границы инпутов */
+  --input-text: #e5e7eb;         /* текст инпутов */
+
+  --card-bg: rgba(17, 24, 39, 0.95); /* фон карточек */
+  --card-hover-bg: #0b1220;          /* hover карточек */
+  --card-border: rgba(255, 255, 255, 0.06);
+
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: var(--transition);
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+code {
+  font-family: 'Courier New', monospace;
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+  opacity: 0.5;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  opacity: 0.8;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

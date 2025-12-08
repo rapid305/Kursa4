@@ -1,0 +1,33 @@
+/* Base Styles - moved to theme.css */
+/* All theme and global styles are now in theme.css */
+
+/* Toast Styles */
+:global(.toaster-container) {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+/* Ensure Toaster is visible */
+:global(.react-hot-toast) {
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: var(--shadow-lg);
+  border-left: 4px solid var(--primary-color);
+}
+
+:global(.react-hot-toast.success) {
+  border-left-color: var(--success-color);
+}
+
+:global(.react-hot-toast.error) {
+  border-left-color: var(--error-color);
+}
+
+:global(.react-hot-toast.loading) {
+  border-left-color: var(--warning-color);
+}
+

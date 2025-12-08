@@ -1,0 +1,167 @@
+/* Card Styles */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  background: var(--card-hover-bg);
+}
+
+/* Card Header */
+.card-header {
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h2,
+.card-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+/* Card Body */
+.card-body {
+  padding: 16px 0;
+}
+
+/* Card Footer */
+.card-footer {
+  border-top: 2px solid var(--border-color);
+  padding-top: 16px;
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Card Grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.card-grid.sm {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.card-grid.lg {
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+}
+
+/* Card Variants */
+.card.primary {
+  border-left: 4px solid var(--primary-color);
+}
+
+.card.success {
+  border-left: 4px solid var(--success-color);
+}
+
+.card.warning {
+  border-left: 4px solid var(--warning-color);
+}
+
+.card.error,
+.card.danger {
+  border-left: 4px solid var(--error-color);
+}
+
+.card.transparent {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+/* Card with Image */
+.card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+  margin: -24px -24px 16px -24px;
+}
+
+/* Card Stats */
+.card-stat {
+  text-align: center;
+  padding: 16px;
+}
+
+.card-stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+}
+
+.card-stat-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Card List */
+.card-list {
+  list-style: none;
+}
+
+.card-list-item {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-list-item:last-child {
+  border-bottom: none;
+}
+
+.card-list-item-label {
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.card-list-item-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Minimalist Card */
+.card.minimal {
+  box-shadow: none;
+  border: 1px solid var(--border-color);
+}
+
+.card.minimal:hover {
+  box-shadow: var(--shadow);
+}
+
+/* Outlined Card */
+.card.outlined {
+  background: transparent;
+  border: 2px solid var(--border-color);
+}
+
+.card.outlined:hover {
+  border-color: var(--primary-color);
+  box-shadow: none;
+}
+
