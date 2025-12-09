@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { AnimalCreate, Species, Enclosure } from '../types'
 import { zooApi } from '../api/zoo'
 import toast from 'react-hot-toast'
-import './Form.css'
+import {
+  Stack,
+  TextField,
+  Button,
+  MenuItem,
+} from '@mui/material'
 
 interface AnimalFormProps {
   animal?: any
@@ -63,113 +68,47 @@ const AnimalForm: React.FC<AnimalFormProps> = ({ animal, onSave, onCancel }) => 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="form">
-      <div className="form-group">
-        <label>Имя *</label>
-        <input
-          type="text"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          required
-        />
-      </div>
+    <Stack component="form" spacing={2} onSubmit={handleSubmit}>
+      <TextField label="Имя" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
 
-      <div className="form-group">
-        <label>Пол *</label>
-        <select
-          value={formData.gender}
-          onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-          required
-        >
-          <option value="male">Самец</option>
-          <option value="female">Самка</option>
-          <option value="unknown">Неизвестно</option>
-        </select>
-      </div>
+      <TextField select label="Пол" value={formData.gender} onChange={(e) => setFormData({ ...formData, gender: e.target.value })} required>
+        <MenuItem value="male">Самец</MenuItem>
+        <MenuItem value="female">Самка</MenuItem>
+        <MenuItem value="unknown">Неизвестно</MenuItem>
+      </TextField>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label>Дата рождения</label>
-          <input
-            type="date"
-            value={formData.birth_date || ''}
-            onChange={(e) => setFormData({ ...formData, birth_date: e.target.value || null })}
-          />
-        </div>
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+        <TextField type="date" label="Дата рождения" value={formData.birth_date || ''} onChange={(e) => setFormData({ ...formData, birth_date: e.target.value || null })} InputLabelProps={{ shrink: true }} />
+        <TextField type="date" label="Дата поступления" value={formData.arrival_date} onChange={(e) => setFormData({ ...formData, arrival_date: e.target.value })} InputLabelProps={{ shrink: true }} required />
+      </Stack>
 
-        <div className="form-group">
-          <label>Дата поступления *</label>
-          <input
-            type="date"
-            value={formData.arrival_date}
-            onChange={(e) => setFormData({ ...formData, arrival_date: e.target.value })}
-            required
-          />
-        </div>
-      </div>
+      <TextField select label="Статус здоровья" value={formData.health_status} onChange={(e) => setFormData({ ...formData, health_status: e.target.value })} required>
+        <MenuItem value="healthy">Здоров</MenuItem>
+        <MenuItem value="sick">Болен</MenuItem>
+        <MenuItem value="under_observation">Под наблюдением</MenuItem>
+      </TextField>
 
-      <div className="form-group">
-        <label>Статус здоровья *</label>
-        <select
-          value={formData.health_status}
-          onChange={(e) => setFormData({ ...formData, health_status: e.target.value })}
-          required
-        >
-          <option value="healthy">Здоров</option>
-          <option value="sick">Болен</option>
-          <option value="under_observation">Под наблюдением</option>
-        </select>
-      </div>
+      <TextField select label="Вид" value={formData.species_uuid} onChange={(e) => setFormData({ ...formData, species_uuid: e.target.value })} required>
+        <MenuItem value="">Выберите вид</MenuItem>
+        {species.map((s) => (
+          <MenuItem key={s.uuid} value={s.uuid}>{s.name}</MenuItem>
+        ))}
+      </TextField>
 
-      <div className="form-group">
-        <label>Вид *</label>
-        <select
-          value={formData.species_uuid}
-          onChange={(e) => setFormData({ ...formData, species_uuid: e.target.value })}
-          required
-        >
-          <option value="">Выберите вид</option>
-          {species.map((s) => (
-            <option key={s.uuid} value={s.uuid}>
-              {s.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      <TextField select label="Вольер" value={formData.enclosure_uuid || ''} onChange={(e) => setFormData({ ...formData, enclosure_uuid: e.target.value || null })}>
+        <MenuItem value="">Не указан</MenuItem>
+        {enclosures.map((e) => (
+          <MenuItem key={e.uuid} value={e.uuid}>{e.name}</MenuItem>
+        ))}
+      </TextField>
 
-      <div className="form-group">
-        <label>Вольер</label>
-        <select
-          value={formData.enclosure_uuid || ''}
-          onChange={(e) => setFormData({ ...formData, enclosure_uuid: e.target.value || null })}
-        >
-          <option value="">Не указан</option>
-          {enclosures.map((e) => (
-            <option key={e.uuid} value={e.uuid}>
-              {e.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      <TextField label="Описание" value={formData.description || ''} onChange={(e) => setFormData({ ...formData, description: e.target.value || null })} multiline rows={4} />
 
-      <div className="form-group">
-        <label>Описание</label>
-        <textarea
-          value={formData.description || ''}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value || null })}
-          rows={4}
-        />
-      </div>
-
-      <div className="form-actions">
-        <button type="button" onClick={onCancel} className="btn btn-secondary">
-          Отмена
-        </button>
-        <button type="submit" className="btn btn-primary" disabled={isLoading}>
-          {isLoading ? 'Сохранение...' : animal ? 'Обновить' : 'Создать'}
-        </button>
-      </div>
-    </form>
+      <Stack direction="row" spacing={1} justifyContent="flex-end">
+        <Button type="button" variant="outlined" onClick={onCancel}>Отмена</Button>
+        <Button type="submit" variant="contained" disabled={isLoading}>{isLoading ? 'Сохранение...' : animal ? 'Обновить' : 'Создать'}</Button>
+      </Stack>
+    </Stack>
   )
 }
 

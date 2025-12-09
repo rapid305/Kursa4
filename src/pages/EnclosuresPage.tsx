@@ -6,7 +6,20 @@ import { UserRole } from '../types'
 import Modal from '../components/Modal'
 import EnclosureForm from '../components/EnclosureForm'
 import toast from 'react-hot-toast'
-import './EnclosuresPage.css'
+import {
+  Box,
+  Container,
+  Paper,
+  Typography,
+  Stack,
+  Button,
+  TextField,
+  Card,
+  CardContent,
+  CardActions,
+} from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
+import RefreshIcon from '@mui/icons-material/Refresh'
 
 const EnclosuresPage = () => {
   const { user } = useAuth()
@@ -79,103 +92,108 @@ const EnclosuresPage = () => {
     return labels[type] || type
   }
 
-  if (isLoading) {
-    return (
-      <div className="enclosures-page">
-        <div className="enclosures-container">
-          <div className="loading">Загрузка...</div>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="enclosures-page">
-      <div className="enclosures-container">
-        <header className="enclosures-header">
-          <h1>Вольеры зоопарка</h1>
-          <div className="header-actions">
-            {user && user.role === UserRole.ADMIN && (
-              <button onClick={handleCreate} className="btn btn-success">
-                + Добавить вольер
-              </button>
-            )}
-            <button onClick={loadEnclosures} className="btn btn-primary">
-              Обновить
-            </button>
-          </div>
-        </header>
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', py: 3 }}>
+      <Container maxWidth="lg">
+        {/* Header */}
+        <Paper elevation={3} sx={{ p: 3, mb: 2, borderRadius: 2 }}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ xs: 'flex-start', sm: 'center' }} justifyContent="space-between">
+            <Typography variant="h4" fontWeight={800} sx={{
+              background: 'linear-gradient(135deg, #5863f8 0%, #7b4ff1 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}>
+              Вольеры зоопарка
+            </Typography>
+            <Stack direction="row" spacing={1}>
+              {user && user.role === UserRole.ADMIN && (
+                <Button variant="contained" startIcon={<AddIcon />} onClick={handleCreate} sx={{ borderRadius: 2 }}>
+                  Добавить вольер
+                </Button>
+              )}
+              <Button variant="outlined" startIcon={<RefreshIcon />} onClick={loadEnclosures} sx={{ borderRadius: 2 }}>
+                Обновить
+              </Button>
+            </Stack>
+          </Stack>
+        </Paper>
 
-        <div className="search-box">
-          <input
-            type="text"
+        {/* Search */}
+        <Paper elevation={3} sx={{ p: 3, mb: 2, borderRadius: 2 }}>
+          <TextField
+            label="Поиск"
             placeholder="Поиск по названию вольера..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="search-input"
+            fullWidth
+            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
           />
-        </div>
+        </Paper>
 
-        {error && <div className="error-message">{error}</div>}
-
-        <div className="enclosures-grid">
-          {enclosures.map((enclosure) => (
-            <div key={enclosure.uuid} className="enclosure-card">
-              <h3>{enclosure.name}</h3>
-              <div className="enclosure-info">
-                <p><strong>Тип:</strong> {getEnclosureTypeLabel(enclosure.enclosure_type)}</p>
-                {enclosure.area && (
-                  <p><strong>Площадь:</strong> {enclosure.area} м²</p>
-                )}
-                {enclosure.capacity && (
-                  <p><strong>Вместимость:</strong> {enclosure.capacity} животных</p>
-                )}
-                {enclosure.location && (
-                  <p><strong>Расположение:</strong> {enclosure.location}</p>
-                )}
-                {enclosure.description && (
-                  <p className="description">{enclosure.description}</p>
-                )}
-              </div>
-              {user && user.role === UserRole.ADMIN && (
-                <div className="enclosure-actions">
-                  <button
-                    onClick={() => handleEdit(enclosure)}
-                    className="btn btn-edit btn-small"
-                  >
-                    Редактировать
-                  </button>
-                  <button
-                    onClick={() => handleDelete(enclosure.uuid)}
-                    className="btn btn-danger btn-small"
-                  >
-                    Удалить
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {enclosures.length === 0 && !isLoading && (
-          <div className="empty-state">Вольеры не найдены</div>
+        {error && (
+          <Paper elevation={1} sx={{ p: 2, mb: 2, borderRadius: 2, bgcolor: '#ffebee', border: '1px solid #ffcdd2', color: '#c62828' }}>
+            {error}
+          </Paper>
         )}
-      </div>
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-        title={editingEnclosure ? 'Редактировать вольер' : 'Добавить вольер'}
-      >
-        <EnclosureForm
-          enclosure={editingEnclosure || undefined}
-          onSave={handleSave}
-          onCancel={handleModalClose}
-        />
-      </Modal>
-    </div>
+        {/* Cards */}
+        {isLoading ? (
+          <Paper elevation={0} sx={{ p: 4, textAlign: 'center', borderRadius: 2 }}>Загрузка...</Paper>
+        ) : enclosures.length === 0 ? (
+          <Paper elevation={0} sx={{ p: 4, textAlign: 'center', borderRadius: 2 }}>Вольеры не найдены</Paper>
+        ) : (
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2 }}>
+            {enclosures.map((enclosure) => (
+              <Card key={enclosure.uuid} elevation={2} sx={{ borderRadius: 2, transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
+                <CardContent>
+                  <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 700, mb: 1.5 }}>{enclosure.name}</Typography>
+                  <Stack spacing={1} sx={{ color: 'text.secondary' }}>
+                    <Typography variant="body2"><strong>Тип:</strong> {getEnclosureTypeLabel(enclosure.enclosure_type)}</Typography>
+                    {enclosure.area && (
+                      <Typography variant="body2"><strong>Площадь:</strong> {enclosure.area} м²</Typography>
+                    )}
+                    {enclosure.capacity && (
+                      <Typography variant="body2"><strong>Вместимость:</strong> {enclosure.capacity} животных</Typography>
+                    )}
+                    {enclosure.location && (
+                      <Typography variant="body2"><strong>Расположение:</strong> {enclosure.location}</Typography>
+                    )}
+                    {enclosure.description && (
+                      <Typography variant="body2" sx={{ fontStyle: 'italic' }}>{enclosure.description}</Typography>
+                    )}
+                  </Stack>
+                </CardContent>
+                {user && user.role === UserRole.ADMIN && (
+                  <CardActions sx={{ pt: 0 }}>
+                    <Stack direction="row" spacing={1} sx={{ width: '100%' }}>
+                      <Button variant="contained" color="primary" fullWidth onClick={() => handleEdit(enclosure)} sx={{ borderRadius: 2 }}>
+                        Редактировать
+                      </Button>
+                      <Button variant="contained" color="error" fullWidth onClick={() => handleDelete(enclosure.uuid)} sx={{ borderRadius: 2 }}>
+                        Удалить
+                      </Button>
+                    </Stack>
+                  </CardActions>
+                )}
+              </Card>
+            ))}
+          </Box>
+        )}
+
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleModalClose}
+          title={editingEnclosure ? 'Редактировать вольер' : 'Добавить вольер'}
+        >
+          <EnclosureForm
+            enclosure={editingEnclosure || undefined}
+            onSave={handleSave}
+            onCancel={handleModalClose}
+          />
+        </Modal>
+      </Container>
+    </Box>
   )
 }
 
 export default EnclosuresPage
-

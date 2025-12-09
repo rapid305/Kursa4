@@ -1,4 +1,4 @@
-import './Loading.css'
+import { Box, CircularProgress, Typography } from '@mui/material'
 
 interface LoadingProps {
   size?: 'sm' | 'md' | 'lg'
@@ -6,19 +6,29 @@ interface LoadingProps {
   message?: string
 }
 
+const sizeMap = {
+  sm: 24,
+  md: 40,
+  lg: 64,
+} as const
+
 const Loading = ({ size = 'md', fullscreen = false, message }: LoadingProps) => {
-  const content = (
-    <div className={`loading loading-${size}`}>
-      <div className="loading-spinner" />
-      {message && <p className="loading-message">{message}</p>}
-    </div>
+  const spinner = (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <CircularProgress size={sizeMap[size]} />
+      {message && <Typography variant="body2" color="text.secondary">{message}</Typography>}
+    </Box>
   )
 
   if (fullscreen) {
-    return <div className="loading-fullscreen">{content}</div>
+    return (
+      <Box sx={{ minHeight: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {spinner}
+      </Box>
+    )
   }
 
-  return content
+  return spinner
 }
 
 export default Loading

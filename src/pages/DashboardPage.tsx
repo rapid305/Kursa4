@@ -2,9 +2,11 @@ import { useAuth } from '../contexts/AuthContext'
 import { Link } from 'react-router-dom'
 import { UserRole } from '../types'
 import './DashboardPage.css'
+import { useTheme } from '../contexts/ThemeContext'
 
 const DashboardPage = () => {
   const { user } = useAuth()
+  const { theme } = useTheme()
 
   if (!user) return null
 
@@ -20,7 +22,7 @@ const DashboardPage = () => {
   }
 
   return (
-    <div className="dashboard-page">
+    <div className={`dashboard-page ${theme}`}>
       <div className="dashboard-container">
         {/* Welcome Card */}
         <div className="card welcome-card">
@@ -131,4 +133,3 @@ const DashboardPage = () => {
 }
 
 export default DashboardPage
-

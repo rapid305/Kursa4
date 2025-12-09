@@ -1,6 +1,7 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { UserRole } from '../types'
+import { Box, Stack, Typography, CircularProgress } from '@mui/material'
 
 interface ProtectedRouteProps {
   children: React.ReactElement
@@ -12,15 +13,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles 
 
   if (isLoading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh',
-        color: 'white'
-      }}>
-        Загрузка...
-      </div>
+      <Box sx={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Stack direction="row" spacing={2} alignItems="center">
+          <CircularProgress />
+          <Typography variant="body1" color="text.secondary">Загрузка...</Typography>
+        </Stack>
+      </Box>
     )
   }
 
@@ -30,18 +28,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles 
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh',
-        color: 'white',
-        flexDirection: 'column',
-        gap: '20px'
-      }}>
-        <h1>403</h1>
-        <p>У вас нет доступа к этой странице</p>
-      </div>
+      <Box sx={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Stack spacing={1} alignItems="center">
+          <Typography variant="h3" fontWeight={800}>403</Typography>
+          <Typography variant="body1" color="text.secondary">У вас нет доступа к этой странице</Typography>
+        </Stack>
+      </Box>
     )
   }
 
@@ -49,4 +41,3 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles 
 }
 
 export default ProtectedRoute
-

@@ -1,4 +1,4 @@
-import './Pagination.css'
+import { Pagination as MUIPagination, PaginationItem, Stack, Typography } from '@mui/material'
 
 interface PaginationProps {
   currentPage: number
@@ -8,88 +8,23 @@ interface PaginationProps {
   totalItems?: number
 }
 
-const Pagination = ({
-  currentPage,
-  totalPages,
-  onPageChange,
-  itemsPerPage,
-  totalItems
-}: PaginationProps) => {
-  const getPageNumbers = (): Array<number | '...'> => {
-    const delta = 2
-    const range: number[] = []
-    const rangeWithDots: Array<number | '...'> = []
-
-    for (let i = 1; i <= totalPages; i++) {
-      if (
-        i === 1 ||
-        i === totalPages ||
-        (i >= currentPage - delta && i <= currentPage + delta)
-      ) {
-        range.push(i)
-      }
-    }
-
-    range.forEach((i) => {
-      const last = rangeWithDots[rangeWithDots.length - 1]
-      if (rangeWithDots.length > 0 && last !== '...') {
-        if (typeof last === 'number' && i - last === 2) {
-          rangeWithDots.push((last as number) + 1)
-        } else if (typeof last === 'number' && i - last !== 1) {
-          rangeWithDots.push('...')
-        }
-      }
-      rangeWithDots.push(i)
-    })
-
-    return rangeWithDots
-  }
-
+const Pagination = ({ currentPage, totalPages, onPageChange, itemsPerPage, totalItems }: PaginationProps) => {
   return (
-    <div className="pagination">
+    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} alignItems={{ xs: 'flex-start', sm: 'center' }} justifyContent="space-between">
       {totalItems && itemsPerPage && (
-        <span className="pagination-info">
-          Показано {(currentPage - 1) * itemsPerPage + 1}-
-          {Math.min(currentPage * itemsPerPage, totalItems)} из {totalItems}
-        </span>
+        <Typography variant="body2" color="text.secondary">
+          Показано {(currentPage - 1) * (itemsPerPage) + 1}-{Math.min(currentPage * (itemsPerPage), totalItems)} из {totalItems}
+        </Typography>
       )}
-
-      <div className="pagination-controls">
-        <button
-          className="pagination-btn pagination-prev"
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          title="Предыдущая страница"
-        >
-          ← Назад
-        </button>
-
-        <div className="pagination-numbers">
-          {getPageNumbers().map((page, index) => (
-            <button
-              key={index}
-              className={`pagination-number ${
-                page === currentPage ? 'active' : ''
-              } ${page === '...' ? 'dots' : ''}`}
-              onClick={() => typeof page === 'number' && onPageChange(page)}
-              disabled={page === '...'}
-              title={typeof page === 'number' ? `Страница ${page}` : undefined}
-            >
-              {page}
-            </button>
-          ))}
-        </div>
-
-        <button
-          className="pagination-btn pagination-next"
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          title="Следующая страница"
-        >
-          Далее →
-        </button>
-      </div>
-    </div>
+      <MUIPagination
+        count={totalPages}
+        page={currentPage}
+        onChange={(_, page) => onPageChange(page)}
+        renderItem={(item) => <PaginationItem {...item} />}
+        color="primary"
+        sx={{ '& .MuiPaginationItem-root': { borderRadius: 2 } }}
+      />
+    </Stack>
   )
 }
 

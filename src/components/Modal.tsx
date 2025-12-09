@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
-import './Modal.css'
+import { Dialog, DialogTitle, DialogContent, IconButton, Stack } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
 
 interface ModalProps {
   isOpen: boolean
@@ -10,32 +11,25 @@ interface ModalProps {
   closeButton?: boolean
 }
 
-const Modal = ({
-  isOpen,
-  onClose,
-  title,
-  children,
-  size = 'md',
-  closeButton = true
-}: ModalProps) => {
-  if (!isOpen) return null
+const widthMap = {
+  sm: 'sm',
+  md: 'md',
+  lg: 'lg',
+} as const
 
+const Modal = ({ isOpen, onClose, title, children, size = 'md', closeButton = true }: ModalProps) => {
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className={`modal modal-${size}`} onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2 className="modal-title">{title}</h2>
-          {closeButton && (
-            <button className="modal-close" onClick={onClose} aria-label="Close modal">
-              ✕
-            </button>
-          )}
-        </div>
-        <div className="modal-body">
-          {children}
-        </div>
-      </div>
-    </div>
+    <Dialog open={isOpen} onClose={onClose} fullWidth maxWidth={widthMap[size]}>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 3, pt: 2 }}>
+        <DialogTitle sx={{ p: 0, fontWeight: 800 }}>{title}</DialogTitle>
+        {closeButton && (
+          <IconButton aria-label="Close" onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        )}
+      </Stack>
+      <DialogContent sx={{ pt: 2 }}>{children}</DialogContent>
+    </Dialog>
   )
 }
 

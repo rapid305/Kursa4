@@ -10,13 +10,20 @@ import SpeciesPage from './pages/SpeciesPage'
 import EnclosuresPage from './pages/EnclosuresPage'
 import UsersPage from './pages/UsersPage'
 import { UserRole } from './types'
-import './App.css'
+import { Box, CircularProgress, Stack, Typography } from '@mui/material'
 
 function RootRedirect() {
   const { user, isLoading } = useAuth()
   
   if (isLoading) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--text-primary)' }}>Загрузка...</div>
+    return (
+      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Stack direction="row" spacing={2} alignItems="center">
+          <CircularProgress />
+          <Typography variant="body1" color="text.secondary">Загрузка...</Typography>
+        </Stack>
+      </Box>
+    )
   }
   
   return <Navigate to={user ? '/dashboard' : '/login'} replace />
@@ -26,12 +33,12 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   const { user } = useAuth()
 
   return (
-    <>
+    <Box>
       {user && <Header />}
-      <main className="app-main">
+      <Box component="main" sx={{ px: { xs: 2, sm: 3 }, py: { xs: 2, sm: 3 } }}>
         {children}
-      </main>
-    </>
+      </Box>
+    </Box>
   )
 }
 
@@ -101,4 +108,3 @@ function App() {
 }
 
 export default App
-
