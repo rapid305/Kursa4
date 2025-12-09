@@ -2,7 +2,22 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { usersApi } from '../api/users'
 import { User, UserRole } from '../types'
-import './UsersPage.css'
+import {
+  Box,
+  Container,
+  Paper,
+  Typography,
+  Stack,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Chip,
+} from '@mui/material'
+import RefreshIcon from '@mui/icons-material/Refresh'
 
 const UsersPage = () => {
   const { user: currentUser } = useAuth()
@@ -39,18 +54,18 @@ const UsersPage = () => {
     }
   }
 
-  const getRoleBadgeClass = (role: UserRole) => {
+  const roleChipColor = (role: UserRole) => {
     switch (role) {
       case UserRole.ADMIN:
-        return 'badge-admin'
+        return 'primary'
       case UserRole.MODERATOR:
-        return 'badge-moderator'
+        return 'secondary'
       default:
-        return 'badge-user'
+        return 'default'
     }
   }
 
-  const getRoleLabel = (role: UserRole) => {
+  const roleLabel = (role: UserRole) => {
     switch (role) {
       case UserRole.ADMIN:
         return 'Администратор'
@@ -61,80 +76,76 @@ const UsersPage = () => {
     }
   }
 
-  if (isLoading) {
-    return (
-      <div className="users-page">
-        <div className="users-container">
-          <div className="loading">Загрузка...</div>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="users-page">
-      <div className="users-container">
-        <header className="users-header">
-          <h1>Управление пользователями</h1>
-          <button onClick={loadUsers} className="btn btn-primary">
-            Обновить
-          </button>
-        </header>
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', py: 3 }}>
+      <Container maxWidth="lg">
+        <Paper elevation={3} sx={{ p: 3, mb: 2, borderRadius: 2 }}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ xs: 'flex-start', sm: 'center' }} justifyContent="space-between">
+            <Typography variant="h4" fontWeight={800} sx={{ color: '#4f46e5' }}>
+              Управление пользователями
+            </Typography>
+            <Button variant="outlined" startIcon={<RefreshIcon />} onClick={loadUsers} sx={{ borderRadius: 2 }}>
+              Обновить
+            </Button>
+          </Stack>
+        </Paper>
 
-        {error && <div className="error-message">{error}</div>}
-
-        <div className="users-table-container">
-          <table className="users-table">
-            <thead>
-              <tr>
-                <th>Имя</th>
-                <th>Email</th>
-                <th>Роль</th>
-                <th>Статус</th>
-                <th>Дата создания</th>
-                {currentUser?.role === UserRole.ADMIN && <th>Действия</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user.uuid}>
-                  <td>{user.first_name} {user.last_name}</td>
-                  <td>{user.email}</td>
-                  <td>
-                    <span className={`badge ${getRoleBadgeClass(user.role)}`}>
-                      {getRoleLabel(user.role)}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`status ${user.is_active ? 'active' : 'inactive'}`}>
-                      {user.is_active ? 'Активен' : 'Неактивен'}
-                    </span>
-                  </td>
-                  <td>{new Date(user.created_at).toLocaleDateString('ru-RU')}</td>
-                  {currentUser?.role === UserRole.ADMIN && (
-                    <td>
-                      <button
-                        onClick={() => handleDelete(user.uuid)}
-                        className="btn btn-danger"
-                        disabled={user.uuid === currentUser.uuid}
-                      >
-                        Удалить
-                      </button>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {users.length === 0 && !isLoading && (
-          <div className="empty-state">Пользователи не найдены</div>
+        {error && (
+          <Paper elevation={1} sx={{ p: 2, mb: 2, borderRadius: 2, bgcolor: '#ffebee', border: '1px solid #ffcdd2', color: '#c62828' }}>
+            {error}
+          </Paper>
         )}
-      </div>
-    </div>
+
+        {isLoading ? (
+          <Paper elevation={0} sx={{ p: 4, textAlign: 'center', borderRadius: 2 }}>Загрузка...</Paper>
+        ) : users.length === 0 ? (
+          <Paper elevation={0} sx={{ p: 4, textAlign: 'center', borderRadius: 2 }}>Пользователи не найдены</Paper>
+        ) : (
+          <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Имя</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Роль</TableCell>
+                  <TableCell>Статус</TableCell>
+                  <TableCell>Дата создания</TableCell>
+                  {currentUser?.role === UserRole.ADMIN && <TableCell>Действия</TableCell>}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {users.map((user) => (
+                  <TableRow key={user.uuid} hover>
+                    <TableCell>{user.first_name} {user.last_name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      <Chip label={roleLabel(user.role)} color={roleChipColor(user.role) as any} variant="outlined" />
+                    </TableCell>
+                    <TableCell>
+                      <Chip label={user.is_active ? 'Активен' : 'Неактивен'} color={user.is_active ? 'success' : 'default'} variant="outlined" />
+                    </TableCell>
+                    <TableCell>{new Date(user.created_at).toLocaleDateString('ru-RU')}</TableCell>
+                    {currentUser?.role === UserRole.ADMIN && (
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => handleDelete(user.uuid)}
+                          disabled={user.uuid === currentUser.uuid}
+                        >
+                          Удалить
+                        </Button>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </Container>
+    </Box>
   )
 }
 
 export default UsersPage
-

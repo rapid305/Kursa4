@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { EnclosureCreate } from '../types'
 import { zooApi } from '../api/zoo'
 import toast from 'react-hot-toast'
-import './Form.css'
+import { Stack, TextField, Button, MenuItem } from '@mui/material'
 
 interface EnclosureFormProps {
   enclosure?: any
@@ -42,80 +42,29 @@ const EnclosureForm: React.FC<EnclosureFormProps> = ({ enclosure, onSave, onCanc
   }
 
   return (
-    <form onSubmit={handleSubmit} className="form">
-      <div className="form-group">
-        <label>Название *</label>
-        <input
-          type="text"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          required
-        />
-      </div>
+    <Stack component="form" spacing={2} onSubmit={handleSubmit}>
+      <TextField label="Название" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
 
-      <div className="form-group">
-        <label>Тип *</label>
-        <select
-          value={formData.enclosure_type}
-          onChange={(e) => setFormData({ ...formData, enclosure_type: e.target.value })}
-          required
-        >
-          <option value="indoor">Внутренний</option>
-          <option value="outdoor">Наружный</option>
-          <option value="mixed">Смешанный</option>
-        </select>
-      </div>
+      <TextField select label="Тип" value={formData.enclosure_type} onChange={(e) => setFormData({ ...formData, enclosure_type: e.target.value })} required>
+        <MenuItem value="indoor">Внутренний</MenuItem>
+        <MenuItem value="outdoor">Наружный</MenuItem>
+        <MenuItem value="mixed">Смешанный</MenuItem>
+      </TextField>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label>Площадь (м²)</label>
-          <input
-            type="number"
-            step="0.01"
-            min="0"
-            value={formData.area || ''}
-            onChange={(e) => setFormData({ ...formData, area: e.target.value ? parseFloat(e.target.value) : null })}
-          />
-        </div>
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+        <TextField type="number" label="Площадь (м²)" inputProps={{ step: 0.01, min: 0 }} value={formData.area ?? ''} onChange={(e) => setFormData({ ...formData, area: e.target.value ? parseFloat(e.target.value) : null })} />
+        <TextField type="number" label="Вместимость" inputProps={{ min: 0 }} value={formData.capacity ?? ''} onChange={(e) => setFormData({ ...formData, capacity: e.target.value ? parseInt(e.target.value) : null })} />
+      </Stack>
 
-        <div className="form-group">
-          <label>Вместимость</label>
-          <input
-            type="number"
-            min="0"
-            value={formData.capacity || ''}
-            onChange={(e) => setFormData({ ...formData, capacity: e.target.value ? parseInt(e.target.value) : null })}
-          />
-        </div>
-      </div>
+      <TextField label="Расположение" value={formData.location ?? ''} onChange={(e) => setFormData({ ...formData, location: e.target.value || null })} />
 
-      <div className="form-group">
-        <label>Расположение</label>
-        <input
-          type="text"
-          value={formData.location || ''}
-          onChange={(e) => setFormData({ ...formData, location: e.target.value || null })}
-        />
-      </div>
+      <TextField label="Описание" value={formData.description ?? ''} onChange={(e) => setFormData({ ...formData, description: e.target.value || null })} multiline rows={4} />
 
-      <div className="form-group">
-        <label>Описание</label>
-        <textarea
-          value={formData.description || ''}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value || null })}
-          rows={4}
-        />
-      </div>
-
-      <div className="form-actions">
-        <button type="button" onClick={onCancel} className="btn btn-secondary">
-          Отмена
-        </button>
-        <button type="submit" className="btn btn-primary" disabled={isLoading}>
-          {isLoading ? 'Сохранение...' : enclosure ? 'Обновить' : 'Создать'}
-        </button>
-      </div>
-    </form>
+      <Stack direction="row" spacing={1} justifyContent="flex-end">
+        <Button type="button" variant="outlined" onClick={onCancel}>Отмена</Button>
+        <Button type="submit" variant="contained" disabled={isLoading}>{isLoading ? 'Сохранение...' : enclosure ? 'Обновить' : 'Создать'}</Button>
+      </Stack>
+    </Stack>
   )
 }
 

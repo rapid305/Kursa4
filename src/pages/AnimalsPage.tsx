@@ -1,20 +1,36 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import { useTheme } from '../contexts/ThemeContext'
 import { zooApi } from '../api/zoo'
 import { Animal, Species, Enclosure } from '../types'
 import { UserRole } from '../types'
 import Modal from '../components/Modal'
 import AnimalForm from '../components/AnimalForm'
 import toast from 'react-hot-toast'
-import './AnimalsPage.css'
+import {
+  Box,
+  Container,
+  Paper,
+  Typography,
+  Stack,
+  Button,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Card,
+  CardContent,
+  CardActions,
+  Chip,
+} from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
+import RefreshIcon from '@mui/icons-material/Refresh'
+import type { SelectChangeEvent } from '@mui/material/Select'
 
 const AnimalsPage = () => {
   const { user } = useAuth()
-  
-  // Debug: проверка роли
-  console.log('User:', user)
-  console.log('User role:', user?.role)
-  console.log('Is ADMIN?', user?.role === UserRole.ADMIN)
+  const { theme } = useTheme()
   const [animals, setAnimals] = useState<Animal[]>([])
   const [species, setSpecies] = useState<Species[]>([])
   const [enclosures, setEnclosures] = useState<Enclosure[]>([])
@@ -56,7 +72,6 @@ const AnimalsPage = () => {
     if (!window.confirm('Вы уверены, что хотите удалить это животное?')) {
       return
     }
-
     try {
       await zooApi.deleteAnimal(uuid)
       toast.success('Животное удалено')
@@ -96,144 +111,175 @@ const AnimalsPage = () => {
     return labels[status] || status
   }
 
-  const getHealthStatusClass = (status: string) => {
-    const classes: Record<string, string> = {
-      healthy: 'status-healthy',
-      sick: 'status-sick',
-      under_observation: 'status-observation',
+  const getHealthStatusColor = (status: string) => {
+    switch (status) {
+      case 'healthy':
+        return { bg: 'success.light', text: 'success.dark' }
+      case 'sick':
+        return { bg: 'error.light', text: 'error.dark' }
+      case 'under_observation':
+        return { bg: 'warning.light', text: 'warning.dark' }
+      default:
+        return { bg: 'action.hover', text: 'text.secondary' }
     }
-    return classes[status] || ''
-  }
-
-  if (isLoading) {
-    return (
-      <div className="animals-page">
-        <div className="animals-container">
-          <div className="loading">Загрузка...</div>
-        </div>
-      </div>
-    )
   }
 
   return (
-    <div className="animals-page">
-      <div className="animals-container">
-        <header className="animals-header">
-          <h1>Животные зоопарка</h1>
-          <div className="header-actions">
-            {user && user.role === UserRole.ADMIN && (
-              <button onClick={handleCreate} className="btn btn-success">
-                + Добавить животное
-              </button>
-            )}
-            <button onClick={loadData} className="btn btn-primary">
-              Обновить
-            </button>
-          </div>
-        </header>
-
-        <div className="search-filters">
-          <div className="search-box">
-            <input
-              type="text"
-              placeholder="Поиск по имени животного или виду..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="search-input"
-            />
-          </div>
-          <div className="filters">
-            <select
-              value={selectedSpecies}
-              onChange={(e) => setSelectedSpecies(e.target.value)}
-              className="filter-select"
-            >
-              <option value="">Все виды</option>
-              {species.map((s) => (
-                <option key={s.uuid} value={s.uuid}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-            <select
-              value={selectedEnclosure}
-              onChange={(e) => setSelectedEnclosure(e.target.value)}
-              className="filter-select"
-            >
-              <option value="">Все вольеры</option>
-              {enclosures.map((e) => (
-                <option key={e.uuid} value={e.uuid}>
-                  {e.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {error && <div className="error-message">{error}</div>}
-
-        <div className="animals-grid">
-          {animals.map((animal) => (
-            <div key={animal.uuid} className="animal-card">
-              <div className="animal-header">
-                <h3>{animal.name}</h3>
-                <span className={`health-status ${getHealthStatusClass(animal.health_status)}`}>
-                  {getHealthStatusLabel(animal.health_status)}
-                </span>
-              </div>
-              <div className="animal-info">
-                <p><strong>Вид:</strong> {animal.species?.name || 'Не указан'}</p>
-                <p><strong>Пол:</strong> {animal.gender === 'male' ? 'Самец' : animal.gender === 'female' ? 'Самка' : 'Неизвестно'}</p>
-                {animal.birth_date && (
-                  <p><strong>Дата рождения:</strong> {new Date(animal.birth_date).toLocaleDateString('ru-RU')}</p>
-                )}
-                <p><strong>Дата поступления:</strong> {new Date(animal.arrival_date).toLocaleDateString('ru-RU')}</p>
-                {animal.enclosure && (
-                  <p><strong>Вольер:</strong> {animal.enclosure.name}</p>
-                )}
-                {animal.description && (
-                  <p className="animal-description">{animal.description}</p>
-                )}
-              </div>
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', py: 3 }}>
+      <Container maxWidth="lg">
+        {/* Header */}
+        <Paper elevation={3} sx={{ p: 3, mb: 2, borderRadius: 2, backgroundImage: theme === 'dark' ? 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0))' : 'linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0))' }}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ xs: 'flex-start', sm: 'center' }} justifyContent="space-between">
+            <Typography variant="h4" fontWeight={800} sx={{
+              background: 'linear-gradient(135deg, #5863f8 0%, #7b4ff1 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}>
+              Животные зоопарка
+            </Typography>
+            <Stack direction="row" spacing={1}>
               {user && user.role === UserRole.ADMIN && (
-                <div className="animal-actions">
-                  <button
-                    onClick={() => handleEdit(animal)}
-                    className="btn btn-edit btn-small"
-                  >
-                    Редактировать
-                  </button>
-                  <button
-                    onClick={() => handleDelete(animal.uuid)}
-                    className="btn btn-danger btn-small"
-                  >
-                    Удалить
-                  </button>
-                </div>
+                  <Button variant="contained" startIcon={<AddIcon />} onClick={handleCreate} sx={{ borderRadius: 2 }}>
+                    Добавить животное
+                  </Button>
               )}
-            </div>
-          ))}
-        </div>
+              <Button variant="outlined" startIcon={<RefreshIcon />} onClick={loadData} sx={{ borderRadius: 2 }}>
+                Обновить
+              </Button>
+            </Stack>
+          </Stack>
+        </Paper>
 
-        {animals.length === 0 && !isLoading && (
-          <div className="empty-state">Животные не найдены</div>
+        {/* Filters */}
+        <Paper elevation={3} sx={{ p: 3, mb: 2, borderRadius: 2 }}>
+          <Stack spacing={2}>
+            <TextField
+                label="Поиск"
+                placeholder="Поиск по имени животного или виду..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                fullWidth
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                  },
+                }}
+            />
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <FormControl fullWidth>
+                <InputLabel id="species-label">Виды</InputLabel>
+                <Select
+                    labelId="species-label"
+                    label="Виды"
+                    value={selectedSpecies}
+                    onChange={(e: SelectChangeEvent) => setSelectedSpecies(e.target.value as string)}
+                    sx={{ borderRadius: 2 }}
+                >
+                  <MenuItem value="">Все виды</MenuItem>
+                  {species.map((s) => (
+                      <MenuItem key={s.uuid} value={s.uuid}>{s.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth>
+                <InputLabel id="enclosure-label">Вольеры</InputLabel>
+                <Select
+                    labelId="enclosure-label"
+                    label="Вольеры"
+                    value={selectedEnclosure}
+                    onChange={(e: SelectChangeEvent) => setSelectedEnclosure(e.target.value as string)}
+                    sx={{ borderRadius: 2 }}
+                >
+                  <MenuItem value="">Все вольеры</MenuItem>
+                  {enclosures.map((e) => (
+                      <MenuItem key={e.uuid} value={e.uuid}>{e.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Stack>
+          </Stack>
+        </Paper>
+
+        {error && (
+            <Paper elevation={1} sx={{ p: 2, mb: 2, borderRadius: 2, bgcolor: '#ffebee', border: '1px solid #ffcdd2', color: '#c62828' }}>
+              {error}
+            </Paper>
         )}
-      </div>
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-        title={editingAnimal ? 'Редактировать животное' : 'Добавить животное'}
-      >
-        <AnimalForm
-          animal={editingAnimal || undefined}
-          onSave={handleSave}
-          onCancel={handleModalClose}
-        />
-      </Modal>
-    </div>
+        {/* Grid */}
+        {isLoading ? (
+            <Paper elevation={0} sx={{ p: 4, textAlign: 'center', borderRadius: 2 }}>Загрузка...</Paper>
+        ) : animals.length === 0 ? (
+            <Paper elevation={0} sx={{ p: 4, textAlign: 'center', borderRadius: 2 }}>Животные не найдены</Paper>
+        ) : (
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
+                gap: 2,
+              }}
+            >
+              {animals.map((animal) => {
+                const health = getHealthStatusColor(animal.health_status)
+                return (
+                  <Card
+                    key={animal.uuid}
+                    elevation={2}
+                    sx={{ borderRadius: 2, transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}
+                  >
+                    <CardContent>
+                      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
+                        <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>{animal.name}</Typography>
+                        <Chip label={getHealthStatusLabel(animal.health_status)} sx={{ bgcolor: health.bg, color: health.text }} />
+                      </Stack>
+                      <Stack spacing={1} sx={{ color: 'text.secondary' }}>
+                        <Typography variant="body2"><strong>Вид:</strong> {animal.species?.name || 'Не указан'}</Typography>
+                        <Typography variant="body2"><strong>Пол:</strong> {animal.gender === 'male' ? 'Самец' : animal.gender === 'female' ? 'Самка' : 'Неизвестно'}</Typography>
+                        {animal.birth_date && (
+                          <Typography variant="body2"><strong>Дата рождения:</strong> {new Date(animal.birth_date).toLocaleDateString('ru-RU')}</Typography>
+                        )}
+                        <Typography variant="body2"><strong>Дата поступления:</strong> {new Date(animal.arrival_date).toLocaleDateString('ru-RU')}</Typography>
+                        {animal.enclosure && (
+                          <Typography variant="body2"><strong>Вольер:</strong> {animal.enclosure.name}</Typography>
+                        )}
+                        {animal.description && (
+                          <Typography variant="body2" sx={{ fontStyle: 'italic' }}>{animal.description}</Typography>
+                        )}
+                      </Stack>
+                    </CardContent>
+                    {user && user.role === UserRole.ADMIN && (
+                      <CardActions sx={{ pt: 0 }}>
+                        <Stack direction="row" spacing={1} sx={{ width: '100%' }}>
+                          <Button variant="contained" color="primary" fullWidth onClick={() => handleEdit(animal)} sx={{ borderRadius: 2 }}>
+                            Редактировать
+                          </Button>
+                          <Button variant="contained" color="error" fullWidth onClick={() => handleDelete(animal.uuid)} sx={{ borderRadius: 2 }}>
+                            Удалить
+                          </Button>
+                        </Stack>
+                      </CardActions>
+                    )}
+                  </Card>
+                )
+              })}
+            </Box>
+        )}
+
+        <Modal
+            isOpen={isModalOpen}
+            onClose={handleModalClose}
+            title={editingAnimal ? 'Редактировать животное' : 'Добавить животное'}
+        >
+          <AnimalForm
+              animal={editingAnimal || undefined}
+              onSave={handleSave}
+              onCancel={handleModalClose}
+          />
+        </Modal>
+      </Container>
+    </Box>
   )
 }
 
 export default AnimalsPage
-

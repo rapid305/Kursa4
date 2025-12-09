@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { SpeciesCreate } from '../types'
 import { zooApi } from '../api/zoo'
 import toast from 'react-hot-toast'
-import './Form.css'
+import { Stack, TextField, Button } from '@mui/material'
 
 interface SpeciesFormProps {
   species?: any
@@ -42,75 +42,25 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ species, onSave, onCancel }) 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="form">
-      <div className="form-group">
-        <label>Название *</label>
-        <input
-          type="text"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          required
-        />
-      </div>
+    <Stack component="form" spacing={2} onSubmit={handleSubmit}>
+      <TextField label="Название" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
 
-      <div className="form-group">
-        <label>Научное название *</label>
-        <input
-          type="text"
-          value={formData.scientific_name}
-          onChange={(e) => setFormData({ ...formData, scientific_name: e.target.value })}
-          required
-        />
-      </div>
+      <TextField label="Научное название" value={formData.scientific_name} onChange={(e) => setFormData({ ...formData, scientific_name: e.target.value })} required />
 
-      <div className="form-group">
-        <label>Описание</label>
-        <textarea
-          value={formData.description || ''}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value || null })}
-          rows={4}
-        />
-      </div>
+      <TextField label="Описание" value={formData.description || ''} onChange={(e) => setFormData({ ...formData, description: e.target.value || null })} multiline rows={4} />
 
-      <div className="form-row">
-        <div className="form-group">
-          <label>Среда обитания</label>
-          <input
-            type="text"
-            value={formData.habitat || ''}
-            onChange={(e) => setFormData({ ...formData, habitat: e.target.value || null })}
-          />
-        </div>
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+        <TextField label="Среда обитания" value={formData.habitat || ''} onChange={(e) => setFormData({ ...formData, habitat: e.target.value || null })} />
+        <TextField label="Питание" value={formData.diet || ''} onChange={(e) => setFormData({ ...formData, diet: e.target.value || null })} />
+      </Stack>
 
-        <div className="form-group">
-          <label>Питание</label>
-          <input
-            type="text"
-            value={formData.diet || ''}
-            onChange={(e) => setFormData({ ...formData, diet: e.target.value || null })}
-          />
-        </div>
-      </div>
+      <TextField label="Статус сохранения" value={formData.conservation_status || ''} onChange={(e) => setFormData({ ...formData, conservation_status: e.target.value || null })} placeholder="Например: LC, NT, VU, EN, CR" />
 
-      <div className="form-group">
-        <label>Статус сохранения</label>
-        <input
-          type="text"
-          value={formData.conservation_status || ''}
-          onChange={(e) => setFormData({ ...formData, conservation_status: e.target.value || null })}
-          placeholder="Например: LC, NT, VU, EN, CR"
-        />
-      </div>
-
-      <div className="form-actions">
-        <button type="button" onClick={onCancel} className="btn btn-secondary">
-          Отмена
-        </button>
-        <button type="submit" className="btn btn-primary" disabled={isLoading}>
-          {isLoading ? 'Сохранение...' : species ? 'Обновить' : 'Создать'}
-        </button>
-      </div>
-    </form>
+      <Stack direction="row" spacing={1} justifyContent="flex-end">
+        <Button type="button" variant="outlined" onClick={onCancel}>Отмена</Button>
+        <Button type="submit" variant="contained" disabled={isLoading}>{isLoading ? 'Сохранение...' : species ? 'Обновить' : 'Создать'}</Button>
+      </Stack>
+    </Stack>
   )
 }
 

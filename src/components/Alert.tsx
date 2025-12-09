@@ -1,4 +1,4 @@
-import './Alert.css'
+import { Alert as MUIAlert, AlertTitle } from '@mui/material'
 
 interface AlertProps {
   type?: 'success' | 'error' | 'warning' | 'info'
@@ -15,29 +15,16 @@ const Alert = ({
   onClose,
   closable = true
 }: AlertProps) => {
-  const icons = {
-    success: '✓',
-    error: '✕',
-    warning: '⚠',
-    info: 'ℹ'
-  }
-
   return (
-    <div className={`alert alert-${type}`}>
-      <div className="alert-icon">{icons[type]}</div>
-      <div className="alert-content">
-        {title && <h4 className="alert-title">{title}</h4>}
-        <p className="alert-message">{message}</p>
-      </div>
-      {closable && onClose && (
-        <button className="alert-close" onClick={onClose} aria-label="Close alert">
-          ✕
-        </button>
-      )}
-    </div>
+    <MUIAlert
+      severity={type}
+      onClose={closable ? onClose : undefined}
+      sx={{ borderRadius: 2 }}
+    >
+      {title && <AlertTitle>{title}</AlertTitle>}
+      {message}
+    </MUIAlert>
   )
 }
 
 export default Alert
-
-

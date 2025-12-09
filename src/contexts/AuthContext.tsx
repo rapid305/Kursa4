@@ -44,6 +44,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } else {
       setIsLoading(false)
     }
+
+    // Listen for unauthorized event to clear state softly
+    const handler = () => {
+      setUser(null)
+      setToken(null)
+    }
+    window.addEventListener('auth-unauthorized', handler as EventListener)
+    return () => window.removeEventListener('auth-unauthorized', handler as EventListener)
   }, [])
 
   const login = async (credentials: LoginCredentials) => {
@@ -75,4 +83,3 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     </AuthContext.Provider>
   )
 }
-
