@@ -24,6 +24,19 @@ venv/
 .venv/
 ENV/
 env/
+!backend/.venv
+env.bak/
+venv.bak/
+pip-log.txt
+pip-delete-this-directory.txt
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.vite/
+.vite
 
 # IDEs
 .idea/
@@ -52,8 +65,6 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # Build
-dist/
-build/
 *.tsbuildinfo
 
 # OS
@@ -65,5 +76,3 @@ alembic/versions/*.pyc
 .idea
 kursa4
 /.idea
-
-

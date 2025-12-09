@@ -29,7 +29,7 @@ const LoginPage = () => {
 
     try {
       await login({ email: email.trim(), password })
-      navigate('/animals')
+      navigate('/dashboard')
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Ошибка входа. Проверьте данные.')
     } finally {

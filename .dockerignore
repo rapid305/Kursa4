@@ -9,6 +9,7 @@ __pycache__/
 venv/
 ENV/
 env/
+!backend/.venv
 
 # Node
 node_modules/
@@ -45,4 +46,3 @@ build/
 # OS
 .DS_Store
 Thumbs.db
-

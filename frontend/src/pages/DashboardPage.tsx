@@ -3,10 +3,26 @@ import { Link } from 'react-router-dom'
 import { UserRole } from '../types'
 import './DashboardPage.css'
 import { useTheme } from '../contexts/ThemeContext'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 const DashboardPage = () => {
   const { user } = useAuth()
   const { theme } = useTheme()
+  const [stats, setStats] = useState({ animals: 0, users: 0, enclosures: 0, species: 0 })
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/v1/stats/')
+        setStats(response.data)
+      } catch (error) {
+        console.error('Ошибка при загрузке статистики:', error)
+      }
+    }
+
+    fetchStats()
+  }, [])
 
   if (!user) return null
 
@@ -100,28 +116,28 @@ const DashboardPage = () => {
             <div className="card stat-card">
               <div className="stat-icon">🦁</div>
               <div className="stat-content">
-                <span className="stat-value">150+</span>
+                <span className="stat-value">{stats.animals}</span>
                 <span className="stat-label">Животных</span>
               </div>
             </div>
             <div className="card stat-card">
               <div className="stat-icon">🌿</div>
               <div className="stat-content">
-                <span className="stat-value">45</span>
+                <span className="stat-value">{stats.species}</span>
                 <span className="stat-label">Видов</span>
               </div>
             </div>
             <div className="card stat-card">
               <div className="stat-icon">🏘️</div>
               <div className="stat-content">
-                <span className="stat-value">28</span>
+                <span className="stat-value">{stats.enclosures}</span>
                 <span className="stat-label">Вольеров</span>
               </div>
             </div>
             <div className="card stat-card">
               <div className="stat-icon">👥</div>
               <div className="stat-content">
-                <span className="stat-value">12</span>
+                <span className="stat-value">{stats.users}</span>
                 <span className="stat-label">Пользователей</span>
               </div>
             </div>

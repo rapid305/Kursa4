@@ -3,10 +3,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 import uvicorn
+from contextlib import asynccontextmanager
 from backend.app.core.config import settings
 from backend.app.core.database import init_db
 from backend.app.api.v1 import api_router
 from backend.app.core.exceptions import BaseAppException
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Инициализация и очистка приложения"""
+    init_db()
+    print("✓ Database initialized")
+    print("✓ API is ready")
+    yield
+    print("✓ API shutdown")
+
 
 app = FastAPI(
     title="ZooSystem API",
@@ -14,7 +25,8 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
-    openapi_url="/openapi.json"
+    openapi_url="/openapi.json",
+    lifespan=lifespan
 )
 
 # Trusted Host Middleware
@@ -73,20 +85,6 @@ async def health_check():
         "status": "healthy",
         "service": "ZooSystem API"
     }
-
-
-@app.on_event("startup")
-async def startup_event():
-    """Инициализация при запуске приложения"""
-    init_db()
-    print("✓ Database initialized")
-    print("✓ API is ready")
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Очистка при завершении приложения"""
-    print("✓ API shutdown")
 
 
 if __name__ == "__main__":
