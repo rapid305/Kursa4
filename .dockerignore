@@ -1,17 +1,48 @@
-node_modules
-build
-.next
-coverage
-*.log
-.prettierignore
-.gitignore
-.git
-.DS_Store
-yarn-error.log*
-yarn-debug.log*
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.venv/
+venv/
+ENV/
+env/
+
+# Node
+node_modules/
 npm-debug.log*
-.env.*.local
-.env.local
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+dist/
+build/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+
+# Environment
 .env
-dist
+.env.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
 
