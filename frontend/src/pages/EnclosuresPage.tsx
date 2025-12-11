@@ -144,8 +144,19 @@ const EnclosuresPage = () => {
         ) : (
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2 }}>
             {enclosures.map((enclosure) => (
-              <Card key={enclosure.uuid} elevation={2} sx={{ borderRadius: 2, transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
-                <CardContent>
+              <Card
+                key={enclosure.uuid}
+                elevation={2}
+                sx={{
+                  borderRadius: 2,
+                  transition: 'transform 0.2s',
+                  '&:hover': { transform: 'translateY(-2px)' },
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%',
+                }}
+              >
+                <CardContent sx={{ flexGrow: 1 }}>
                   <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 700, mb: 1.5 }}>{enclosure.name}</Typography>
                   <Stack spacing={1} sx={{ color: 'text.secondary' }}>
                     <Typography variant="body2"><strong>Тип:</strong> {getEnclosureTypeLabel(enclosure.enclosure_type)}</Typography>
