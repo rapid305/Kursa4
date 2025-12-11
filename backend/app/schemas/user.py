@@ -12,8 +12,8 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
-    role: UserRole = UserRole.USER
-    
+    role: UserRole = UserRole.VISITOR
+
     @field_validator('password')
     @classmethod
     def validate_password_length(cls, v: str) -> str:
@@ -55,4 +55,3 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: str | None = None
     role: UserRole | None = None
-

@@ -76,3 +76,5 @@ alembic/versions/*.pyc
 .idea
 kursa4
 /.idea
+/backend/.venv/Scripts/
+/backend/.venv

@@ -16,6 +16,12 @@ import {
   TableHead,
   TableRow,
   Chip,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Snackbar,
+  Alert,
 } from '@mui/material'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
@@ -24,6 +30,8 @@ const UsersPage = () => {
   const [users, setUsers] = useState<User[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+  const [editedRoles, setEditedRoles] = useState<Record<string, UserRole>>({})
+  const [notify, setNotify] = useState<{ open: boolean; severity: 'success' | 'error'; message: string }>({ open: false, severity: 'success', message: '' })
 
   useEffect(() => {
     loadUsers()
@@ -54,11 +62,30 @@ const UsersPage = () => {
     }
   }
 
+  const handleRoleChange = (userUuid: string, role: UserRole) => {
+    setEditedRoles(prev => ({ ...prev, [userUuid]: role }))
+  }
+
+  const closeNotify = () => setNotify(prev => ({ ...prev, open: false }))
+
+  const handleSaveRole = async (userUuid: string) => {
+    const newRole = editedRoles[userUuid]
+    if (!newRole) return
+    try {
+      const updated = await usersApi.update(userUuid, { role: newRole } as Partial<User>)
+      setUsers(prev => prev.map(u => (u.uuid === userUuid ? updated : u)))
+      setNotify({ open: true, severity: 'success', message: 'Роль обновлена' })
+    } catch (err: any) {
+      const detail = err?.response?.data?.detail || 'Ошибка изменения роли'
+      setNotify({ open: true, severity: 'error', message: detail })
+    }
+  }
+
   const roleChipColor = (role: UserRole) => {
     switch (role) {
       case UserRole.ADMIN:
         return 'primary'
-      case UserRole.MODERATOR:
+      case UserRole.STAFF:
         return 'secondary'
       default:
         return 'default'
@@ -69,10 +96,10 @@ const UsersPage = () => {
     switch (role) {
       case UserRole.ADMIN:
         return 'Администратор'
-      case UserRole.MODERATOR:
-        return 'Модератор'
+      case UserRole.STAFF:
+        return 'Сотрудник'
       default:
-        return 'Пользователь'
+        return 'Посетитель'
     }
   }
 
@@ -110,6 +137,7 @@ const UsersPage = () => {
                   <TableCell>Роль</TableCell>
                   <TableCell>Статус</TableCell>
                   <TableCell>Дата создания</TableCell>
+                  {currentUser?.role === UserRole.ADMIN && <TableCell>Управление ролью</TableCell>}
                   {currentUser?.role === UserRole.ADMIN && <TableCell>Действия</TableCell>}
                 </TableRow>
               </TableHead>
@@ -125,6 +153,37 @@ const UsersPage = () => {
                       <Chip label={user.is_active ? 'Активен' : 'Неактивен'} color={user.is_active ? 'success' : 'default'} variant="outlined" />
                     </TableCell>
                     <TableCell>{new Date(user.created_at).toLocaleDateString('ru-RU')}</TableCell>
+                    {currentUser?.role === UserRole.ADMIN && (
+                      <TableCell>
+                        {user.uuid !== currentUser.uuid ? (
+                          <Stack direction="row" spacing={1}>
+                            <FormControl size="small" sx={{ minWidth: 160 }}>
+                              <InputLabel id={`role-label-${user.uuid}`}>Роль</InputLabel>
+                              <Select
+                                labelId={`role-label-${user.uuid}`}
+                                value={editedRoles[user.uuid] ?? user.role}
+                                label="Роль"
+                                onChange={(e) => handleRoleChange(user.uuid, e.target.value as UserRole)}
+                              >
+                                <MenuItem value={UserRole.ADMIN}>Администратор</MenuItem>
+                                <MenuItem value={UserRole.STAFF}>Сотрудник</MenuItem>
+                                <MenuItem value={UserRole.VISITOR}>Посетитель</MenuItem>
+                              </Select>
+                            </FormControl>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              onClick={() => handleSaveRole(user.uuid)}
+                              disabled={(editedRoles[user.uuid] ?? user.role) === user.role}
+                            >
+                              Сохранить
+                            </Button>
+                          </Stack>
+                        ) : (
+                          <Typography variant="body2" color="text.secondary">Нельзя менять свою роль</Typography>
+                        )}
+                      </TableCell>
+                    )}
                     {currentUser?.role === UserRole.ADMIN && (
                       <TableCell>
                         <Button
@@ -144,6 +203,11 @@ const UsersPage = () => {
           </TableContainer>
         )}
       </Container>
+      <Snackbar open={notify.open} autoHideDuration={3000} onClose={closeNotify} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <Alert onClose={closeNotify} severity={notify.severity} sx={{ width: '100%' }}>
+          {notify.message}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

@@ -192,6 +192,7 @@ const SpeciesPage = () => {
                 md: 'repeat(3, 1fr)',
               },
               gap: 2,
+              alignItems: 'stretch',
             }}
           >
             {species.map((s) => (
@@ -202,9 +203,12 @@ const SpeciesPage = () => {
                   borderRadius: 2,
                   transition: 'transform 0.2s',
                   '&:hover': { transform: 'translateY(-2px)' },
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%',
                 }}
               >
-                <CardContent>
+                <CardContent sx={{ flexGrow: 1 }}>
                   <Typography
                     variant="h6"
                     sx={{ color: 'primary.main', fontWeight: 700 }}

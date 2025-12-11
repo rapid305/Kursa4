@@ -6,8 +6,8 @@ from backend.app.models.base import BaseModel
 
 class UserRole(str, Enum):
     ADMIN = "admin"
-    USER = "user"
-    MODERATOR = "moderator"
+    STAFF = "staff"
+    VISITOR = "visitor"
 
 
 class UserModel(BaseModel):
@@ -33,6 +33,6 @@ class UserModel(BaseModel):
     )
     role: Mapped[UserRole] = mapped_column(
         SQLEnum(UserRole),
-        default=UserRole.USER,
+        default=UserRole.VISITOR,
         nullable=False,
     )

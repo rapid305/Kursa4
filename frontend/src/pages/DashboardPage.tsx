@@ -30,7 +30,7 @@ const DashboardPage = () => {
     switch (role) {
       case UserRole.ADMIN:
         return '#ef4444'
-      case UserRole.MODERATOR:
+      case UserRole.STAFF:
         return '#f59e0b'
       default:
         return '#10b981'
@@ -49,8 +49,8 @@ const DashboardPage = () => {
             </div>
             <div className="welcome-badge" style={{ backgroundColor: getRoleColor(user.role) }}>
               {user.role === UserRole.ADMIN && '👑'}
-              {user.role === UserRole.MODERATOR && '🎯'}
-              {user.role === UserRole.USER && '👤'}
+              {user.role === UserRole.STAFF && '🎯'}
+              {user.role === UserRole.VISITOR && '👤'}
               <span>{user.role.toUpperCase()}</span>
             </div>
           </div>
@@ -98,7 +98,7 @@ const DashboardPage = () => {
               <span className="card-arrow">→</span>
             </Link>
 
-            {(user.role === UserRole.ADMIN || user.role === UserRole.MODERATOR) && (
+            {(user.role === UserRole.ADMIN || user.role === UserRole.STAFF) && (
               <Link to="/users" className="card dashboard-card users-card">
                 <div className="card-icon">👥</div>
                 <h3>Пользователи</h3>

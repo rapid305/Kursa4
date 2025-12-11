@@ -218,6 +218,7 @@ const AnimalsPage = () => {
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
                 gap: 2,
+                alignItems: 'stretch',
               }}
             >
               {animals.map((animal) => {
@@ -226,9 +227,16 @@ const AnimalsPage = () => {
                   <Card
                     key={animal.uuid}
                     elevation={2}
-                    sx={{ borderRadius: 2, transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}
+                    sx={{
+                      borderRadius: 2,
+                      transition: 'transform 0.2s',
+                      '&:hover': { transform: 'translateY(-2px)' },
+                      display: 'flex',
+                      flexDirection: 'column',
+                      height: '100%',
+                    }}
                   >
-                    <CardContent>
+                    <CardContent sx={{ flexGrow: 1 }}>
                       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
                         <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>{animal.name}</Typography>
                         <Chip label={getHealthStatusLabel(animal.health_status)} sx={{ bgcolor: health.bg, color: health.text }} />

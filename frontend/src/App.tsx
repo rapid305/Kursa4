@@ -93,7 +93,7 @@ function App() {
           <Route
             path="/users"
             element={
-              <ProtectedRoute allowedRoles={[UserRole.ADMIN, UserRole.MODERATOR]}>
+              <ProtectedRoute allowedRoles={[UserRole.ADMIN, UserRole.STAFF]}>
                 <AppLayout>
                   <UsersPage />
                 </AppLayout>

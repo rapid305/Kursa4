@@ -44,7 +44,7 @@ const Header = () => {
     { to: '/animals', label: 'Животные', icon: <PetsIcon /> },
     { to: '/species', label: 'Виды', icon: <ScienceIcon /> },
     { to: '/enclosures', label: 'Вольеры', icon: <ParkIcon /> },
-    ...(user.role === UserRole.ADMIN || user.role === UserRole.MODERATOR
+    ...(user.role === UserRole.ADMIN || user.role === UserRole.STAFF
       ? [{ to: '/users', label: 'Пользователи', icon: <PeopleIcon /> }]
       : []),
   ]
